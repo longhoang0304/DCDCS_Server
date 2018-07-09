@@ -60,6 +60,10 @@ const UserSchema = new Schema(
       default: '',
       maxlength: 255,
     },
+    deviceList: {
+      type: [String],
+      default: [],
+    },
   },
   {
     collection: 'users',
@@ -131,6 +135,23 @@ UserSchema.statics = {
       .skip(+skip)
       .limit(+limit)
       .exec();
+  },
+  /**
+   *
+   * @param {String} devideId
+   * Update user device upon login
+   */
+  async updateDevices(username, devideId) {
+    const user = await this.findByUser(username);
+    if (!user) {
+      throw new APIError('No such user exist!', httpStatus.NOT_FOUND);
+    }
+    if (user.deviceList.includes(devideId)) {
+      user.deviceList.push(devideId);
+      user.save();
+      return true;
+    }
+    return false;
   },
 };
 
