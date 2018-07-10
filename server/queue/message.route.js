@@ -1,5 +1,6 @@
 import express from 'express';
 import httpStatus from 'http-status';
+import _ from 'lodash';
 import * as messageCtrl from './message.controller';
 import { genUserVerification } from '../helper/utils';
 
@@ -17,22 +18,29 @@ const router = express.Router();
  */
 function verificationFunction(req, res401, next, id, res) {
   const baseUrlPattern = /^\/api\/actions\/?$/;
+  const fullPattern = /^\/api\/actions\/(.+)$/;
   const { method, originalUrl } = req;
   const isBase = baseUrlPattern.test(originalUrl);
 
   if (isBase && method === 'GET') return res401();
   if (isBase && method === 'POST') {
-    const { from } = req.body;
-    if (id !== from) {
+    const { from, to } = req.body;
+    if (id !== from.senderId) {
+      return res401();
+    }
+    if (to.receiverId === from.senderId) {
+      return res401();
+    }
+    if (to.deviceId === from.deviceId) {
       return res401();
     }
     return next();
   }
 
-  let receiverId = originalUrl.match(/[a-f\d]{24}/);
-  receiverId = receiverId && receiverId[0];
+  const match = fullPattern.exec(originalUrl);
+  const receiverId = match[0];
 
-  if (!receiverId) {
+  if (!_.isString(receiverId) || !receiverId) {
     return res.status(httpStatus.BAD_REQUEST).json({ message: 'Invalid receiver id' });
   }
 
@@ -59,12 +67,12 @@ router.route('/')
 /**
  * Get a single message
  */
-router.route('/:receiverId')
+router.route('/:deviceId')
   .get(messageCtrl.get);
 
 /**
  * Load message when API with userId route parameter is hit
  */
-router.param('receiverId', messageCtrl.load);
+router.param('deviceId', messageCtrl.load);
 
 export default router;

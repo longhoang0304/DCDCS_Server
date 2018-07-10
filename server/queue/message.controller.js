@@ -1,4 +1,6 @@
+import jwt from 'jsonwebtoken';
 import Message from './message.model';
+import config from '../../config';
 
 /**
  *
@@ -8,9 +10,12 @@ import Message from './message.model';
  * @param {String | ObjectId} id
  * Load single message on queue
  */
-async function load(req, res, next, id) {
+async function load(req, res, next, deviceId) {
   try {
-    const message = await Message.get(id);
+    const token = req.headers['x-access-token'];
+    const decoded = jwt.verify(token, config.secret);
+    const { id } = decoded;
+    const message = await Message.get(id, deviceId);
     req.message = message;
     return next();
   } catch (error) {

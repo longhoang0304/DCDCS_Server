@@ -7,14 +7,32 @@ const MessageSchema = new Schema(
     from: {
       // each message can only have one sender
       // sender can be productID/UserId
-      type: Schema.Types.ObjectId,
-      required: true,
+      type: {
+        senderId: {
+          type: Schema.Types.ObjectId,
+          required: true,
+        },
+        deviceId: {
+          type: String,
+          required: true,
+        },
+        required: true,
+      },
     },
     to: {
       // one message can only have one receiver
       // sender can be productID/UserId
-      type: Schema.Types.ObjectId,
-      required: true,
+      type: {
+        receiverId: {
+          type: Schema.Types.ObjectId,
+          required: true,
+        },
+        deviceId: {
+          type: String,
+          required: true,
+        },
+        required: true,
+      },
     },
     payload: {
       type: Schema.Types.Mixed,
@@ -39,12 +57,16 @@ MessageSchema.method({
 });
 
 MessageSchema.statics = {
-  async get(to) {
+  async get(receiverId, deviceId) {
     const sort = {
       priority: -1,
       createdAt: -1,
     };
-    const msg = await this.findOneAndRemove(to, { sort }).exec();
+    const msg = await this.findOneAndRemove({
+      to: {
+        receiverId, deviceId,
+      },
+    }, { sort }).exec();
     if (msg) {
       return msg;
     }
