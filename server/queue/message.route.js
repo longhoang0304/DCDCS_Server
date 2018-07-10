@@ -29,11 +29,11 @@ function verificationFunction(req, res401, next, id, res) {
     return next();
   }
 
-  let productId = originalUrl.match(/[a-f\d]{24}/);
-  productId = productId && productId[0];
+  let receiverId = originalUrl.match(/[a-f\d]{24}/);
+  receiverId = receiverId && receiverId[0];
 
-  if (!productId) {
-    return res.status(httpStatus.BAD_REQUEST).json({ message: 'Invalid product id' });
+  if (!receiverId) {
+    return res.status(httpStatus.BAD_REQUEST).json({ message: 'Invalid receiver id' });
   }
 
   return next();
@@ -59,12 +59,12 @@ router.route('/')
 /**
  * Get a single message
  */
-router.route('/:productId')
+router.route('/:receiverId')
   .get(messageCtrl.get);
 
 /**
  * Load message when API with userId route parameter is hit
  */
-router.param('productId', messageCtrl.load);
+router.param('receiverId', messageCtrl.load);
 
 export default router;

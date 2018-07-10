@@ -35,7 +35,6 @@ const UserSchema = new Schema(
     products: {
       type: [{
         productId: Schema.Types.ObjectId,
-        productName: String,
         broughtAt: Schema.Types.Date,
       }],
       default: [],
@@ -129,6 +128,11 @@ UserSchema.statics = {
       id,
     };
   },
+  async isContainsProduct(productId) {
+    const user = await this.findOne({ 'products.productId': productId });
+    if (user) return true;
+    return false;
+  },
   /**
    * List all
    */
@@ -138,23 +142,6 @@ UserSchema.statics = {
       .skip(+skip)
       .limit(+limit)
       .exec();
-  },
-  /**
-   *
-   * @param {String} devideId
-   * Update user device upon login
-   */
-  async updateDevices(username, devideId) {
-    const user = await this.findByUser(username);
-    if (!user) {
-      throw new APIError('No such user exist!', httpStatus.NOT_FOUND);
-    }
-    if (user.deviceList.includes(devideId)) {
-      user.deviceList.push(devideId);
-      user.save();
-      return true;
-    }
-    return false;
   },
 };
 

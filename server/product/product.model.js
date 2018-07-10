@@ -24,6 +24,10 @@ const ProductSchema = new Schema(
     broughtAt: {
       type: Schema.Types.Date,
     },
+    name: {
+      type: String,
+      default: '',
+    },
   },
   {
     collection: 'products',

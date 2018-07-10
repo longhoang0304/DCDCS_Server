@@ -32,7 +32,8 @@ const genUserVerification = (verificationFunction) => async (req, res, next) => 
   }
 
   if (isAdmin) return next();
-  return verificationFunction(req, res401, next, id, res);
+  const ret = await verificationFunction(req, res401, next, id, res);
+  return ret;
 };
 
 export {

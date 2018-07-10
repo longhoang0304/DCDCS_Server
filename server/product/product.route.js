@@ -1,4 +1,5 @@
 import express from 'express';
+import User from '../user/user.model';
 import * as productCtrl from './product.controller';
 import { genUserVerification } from '../helper/utils';
 
@@ -11,9 +12,12 @@ const router = express.Router();
  * @param {Function} next
  * callback function helps verify user
  */
-function verificationFunction(req, res401, next) {
-  const { method } = req;
-  if (method !== 'GET') return res401();
+async function verificationFunction(req, res401, next) {
+  const { method, originalUrl } = req;
+  const productId = originalUrl.match(/[a-f\d]{24}/);
+  if (!productId) return res401();
+  if (!await User.isContainsProduct(productId)) return res401();
+  if (method === 'DELETE') return res401();
   return next();
 }
 
@@ -37,7 +41,7 @@ router.route('/')
 /**
  * Get a single user
  */
-router.route('/:userId')
+router.route('/:productId')
   .get(productCtrl.get)
   .put(productCtrl.update)
   .delete(productCtrl.remove);
@@ -45,6 +49,6 @@ router.route('/:userId')
 /**
  * Load user when API with userId route parameter is hit
  */
-router.param('userId', productCtrl.load);
+router.param('productId', productCtrl.load);
 
 export default router;
