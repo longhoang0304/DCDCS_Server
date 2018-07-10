@@ -31,6 +31,7 @@ const ProductUserSchema = new Schema(
       required: true,
       maxlength: 8192,
     },
+    // each product can only have zero or one user
     productId: Schema.Types.ObjectId,
   },
   {

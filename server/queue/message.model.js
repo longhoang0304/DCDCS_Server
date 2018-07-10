@@ -5,10 +5,14 @@ import APIError from '../helper/APIError';
 const MessageSchema = new Schema(
   {
     from: {
+      // each message can only have one sender
+      // sender can be productID/UserId
       type: Schema.Types.ObjectId,
       required: true,
     },
     to: {
+      // one message can only have one receiver
+      // sender can be productID/UserId
       type: Schema.Types.ObjectId,
       required: true,
     },

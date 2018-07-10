@@ -31,9 +31,11 @@ const UserSchema = new Schema(
       required: true,
       maxlength: 8192,
     },
+    // one user can have many products
     products: {
       type: [{
         productId: Schema.Types.ObjectId,
+        productName: String,
         broughtAt: Schema.Types.Date,
       }],
       default: [],
@@ -60,9 +62,10 @@ const UserSchema = new Schema(
       default: '',
       maxlength: 255,
     },
-    deviceList: {
-      type: [String],
-      default: [],
+    ssn: {
+      type: String,
+      default: '',
+      maxlength: 255,
     },
   },
   {

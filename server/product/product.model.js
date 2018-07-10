@@ -5,6 +5,7 @@ import APIError from '../helper/APIError';
 const ProductSchema = new Schema(
   {
     model: {
+      // 1 model can have many producs
       type: Schema.Types.ObjectId,
       required: true,
     },
