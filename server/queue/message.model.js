@@ -42,6 +42,7 @@ const MessageSchema = new Schema(
       type: Schema.Types.Date,
       required: true,
       default: new Date(),
+      expires: 30,
     },
     priority: {
       type: Number,
