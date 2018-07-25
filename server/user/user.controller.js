@@ -48,10 +48,11 @@ async function update(req, res) {
   const { newUser } = req.body;
   const newUsername = newUser.username;
   const checkUsername = (_.isString(newUsername) && user.username !== newUsername);
-  const samePassword = bcrypt.compareSync(newUser.password, user.password);
+  const hasPassword = _.isString(newUser.password);
+  const samePassword = hasPassword && bcrypt.compareSync(newUser.password, user.password);
 
   // when password is changed, recalculated hash
-  if (!samePassword) {
+  if (hasPassword && !samePassword) {
     const salt = bcrypt.genSaltSync(10);
     newUser.salt = salt;
     newUser.password = bcrypt.hashSync(newUser.password, salt);
@@ -61,7 +62,7 @@ async function update(req, res) {
     }, config.secret);
     newUser.token = token;
   }
-  if (samePassword) {
+  if (hasPassword && samePassword) {
     newUser.password = user.password;
   }
 
