@@ -35,7 +35,7 @@ const MessageSchema = new Schema(
       },
     },
     payload: {
-      type: Schema.Types.Mixed,
+      type: Object,
       required: true,
     },
     createdAt: {
