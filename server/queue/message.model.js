@@ -31,7 +31,7 @@ const MessageSchema = new Schema(
       type: Schema.Types.Date,
       required: true,
       default: new Date(),
-      expires: 30,
+      expires: 180, // 3 minutes
     },
     priority: {
       type: Number,
