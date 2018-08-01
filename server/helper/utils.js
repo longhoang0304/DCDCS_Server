@@ -1,5 +1,6 @@
 import httpStatus from 'http-status';
 import User from '../user/user.model';
+import ProductUser from '../product.user/product.user.model';
 
 function checkPassword(pass) {
   if (typeof pass !== 'string') return false;
@@ -24,11 +25,17 @@ const genUserVerification = (verificationFunction) => async (req, res, next) => 
     const ret = await User.verifyToken(token);
     id = ret.id; // eslint-disable-line
     isAdmin = ret.isAdmin; // eslint-disable-line
-  } catch (error) {
-    if (error.status === httpStatus.BAD_REQUEST) {
-      return res.status(error.status).json({ message: error.message });
+  } catch (e) {
+    try {
+      const ret = await ProductUser.verifyToken(token);
+      id = ret.id; // eslint-disable-line
+      isAdmin = ret.isAdmin; // eslint-disable-line
+    } catch (error) {
+      if (error.status === httpStatus.BAD_REQUEST) {
+        return res.status(error.status).json({ message: error.message });
+      }
+      return res401();
     }
-    return res401();
   }
 
   if (isAdmin) return next();

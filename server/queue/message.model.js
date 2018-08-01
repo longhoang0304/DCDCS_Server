@@ -58,14 +58,14 @@ MessageSchema.method({
 });
 
 MessageSchema.statics = {
-  async get(receiverId, deviceId) {
+  async get(deviceId) {
     const sort = {
       priority: -1,
       createdAt: -1,
     };
     const msg = await this.findOneAndRemove({
       to: {
-        receiverId, deviceId,
+        deviceId,
       },
     }, { sort }).exec();
     if (msg) {

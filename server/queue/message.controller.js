@@ -1,6 +1,4 @@
-import jwt from 'jsonwebtoken';
 import Message from './message.model';
-import config from '../../config';
 
 /**
  *
@@ -12,10 +10,7 @@ import config from '../../config';
  */
 async function load(req, res, next, deviceId) {
   try {
-    const token = req.headers['x-access-token'];
-    const decoded = jwt.verify(token, config.secret);
-    const { id } = decoded;
-    const message = await Message.get(id, deviceId);
+    const message = await Message.get(deviceId);
     req.message = message;
     return next();
   } catch (error) {
