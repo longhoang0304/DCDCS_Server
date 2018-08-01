@@ -20,19 +20,8 @@ const MessageSchema = new Schema(
       },
     },
     to: {
-      // one message can only have one receiver
-      // sender can be productID/UserId
-      type: {
-        receiverId: {
-          type: Schema.Types.ObjectId,
-          required: true,
-        },
-        deviceId: {
-          type: String,
-          required: true,
-        },
-        required: true,
-      },
+      type: String,
+      required: true,
     },
     payload: {
       type: Object,
@@ -64,9 +53,7 @@ MessageSchema.statics = {
       createdAt: -1,
     };
     const msg = await this.findOneAndRemove({
-      to: {
-        deviceId,
-      },
+      to: deviceId,
     }, { sort }).exec();
     if (msg) {
       return msg;
